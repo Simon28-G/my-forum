@@ -2,10 +2,17 @@
 https://docs.nestjs.com/providers#services
 */
 
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { UsersService } from 'src/services/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/models/users/user.schema';
+import { CreateUserDto } from 'src/controllers/CreateUser.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -23,10 +30,23 @@ export class AuthService {
     return null;
   }
 
-  async login(user: any) {
-    const payload = { username: user.username, password: user.password };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+  async login(user: User) {
+    const supposedUser: User = await this.usersService.findOne(user.username);
+    const hash = supposedUser.password;
+    const isMatch = await bcrypt.compare(user.password, hash);
+    if (isMatch) {
+      const payload = { username: user.username };
+      return {
+        access_token: this.jwtService.sign(payload),
+      };
+    }
+    throw new BadRequestException({
+      field: 'password',
+      error: 'Incorrect password',
+    });
+  }
+
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    return this.usersService.create(createUserDto);
   }
 }

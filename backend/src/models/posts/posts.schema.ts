@@ -4,13 +4,13 @@ import { User } from '../users/user.schema';
 
 export type PostDocument = Post & Document;
 
-@Schema()
+@Schema({ collection: 'Posts', versionKey: false })
 export class Post {
   @Prop()
-  title: String;
+  title: string;
 
   @Prop()
-  text: String;
+  text: string;
 
   @Prop()
   date: Date;
@@ -18,4 +18,4 @@ export class Post {
   user: User;
 }
 
-export const UserSchema = SchemaFactory.createForClass(Post);
+export const PostSchema = SchemaFactory.createForClass(Post);

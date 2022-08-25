@@ -7,7 +7,7 @@ export type CommentDocument = Comment & Document;
 @Schema()
 export class Comment {
   @Prop()
-  text: String;
+  text: string;
 
   @Prop()
   date: Date;

@@ -9,19 +9,21 @@ import { PassportModule } from '@nestjs/passport';
 import { User, UserSchema } from 'src/models/users/user.schema';
 import { UsersService } from 'src/services/users.service';
 import { AuthService } from './auth.service';
-import { jwtConstants } from './constants';
 import { DistantStrategy } from './distant.strategy';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
     PassportModule,
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
+    JwtModule.registerAsync({
+      useFactory: async () => ({
+        secret: process.env.JWT_SECRET,
+        signOptions: { expiresIn: '3h' },
+      }),
     }),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
-  providers: [UsersService, AuthService, DistantStrategy],
+  providers: [UsersService, AuthService, DistantStrategy, JwtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}
