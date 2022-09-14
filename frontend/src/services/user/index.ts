@@ -2,7 +2,8 @@ import { AxiosResponse } from "axios";
 import api from "..";
 
 export const login = (username: string, password: string) =>
-  api.post("/auth/login", { username, password });
+  api.post<{ access_token: string }>("/auth/login", { username, password });
+
 export const signUp = (
   username: string,
   password: string

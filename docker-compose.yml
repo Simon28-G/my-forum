@@ -1,0 +1,13 @@
+services:
+  nestjs-server:
+    build:
+      context: ./backend
+    ports:
+      - "3005:3005"
+    container_name: node-api
+  frontend-react:
+    build:
+      context: ./frontend
+    ports:
+      - "80:80"
+    container_name: react-ui

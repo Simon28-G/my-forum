@@ -1,0 +1,11 @@
+services:
+  nestjs-server:
+    image: backend
+    ports:
+      - "5000:5000"
+
+    
+  frontend-react:
+    image: frontend
+    ports:
+      - "80:80"

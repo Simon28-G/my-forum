@@ -1,8 +1,11 @@
 import axios from "axios";
 import { ErrorMessage, Formik, useField, FieldHookConfig } from "formik";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { login, signUp } from "src/services/user";
+import store, { useAppSelector } from "src/store";
+import { loginUser } from "src/store/slices/user";
 import * as Yup from "yup";
 
 interface Props {
@@ -12,7 +15,7 @@ interface Props {
 type MyTextInputProps = FieldHookConfig<string> & {
   label: string;
 };
-const MyTextInput = ({ label, ...props }: MyTextInputProps) => {
+export const MyTextInput = ({ label, ...props }: MyTextInputProps) => {
   const [field, meta] = useField(props.name);
   return (
     <>
@@ -40,11 +43,14 @@ const MyTextInput = ({ label, ...props }: MyTextInputProps) => {
 
 export const Auth = (props: Props) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const status = useAppSelector((state) => state.user.status);
   return (
     <div
       className="w-screen h-screen flex justify-center items-center
     bg-gradient-to-br from-purple-700 to-rose-500"
     >
+      <h1>{status}</h1>
       <Formik
         initialValues={{ username: "", password: "" }}
         validationSchema={Yup.object({
@@ -75,20 +81,15 @@ export const Auth = (props: Props) => {
                 return;
               });
           } else {
-            login(values.username, values.password)
-              .then(() => {
-                navigate("/home");
+            dispatch(
+              loginUser({
+                username: values.username,
+                password: values.password,
               })
-              .catch((error) => {
-                if (axios.isAxiosError(error)) {
-                  setFieldError(
-                    error.response?.data.field,
-                    error.response?.data.error
-                  );
-                }
-                setSubmitting(false);
-                return;
-              });
+            );
+            navigate("/home");
+            setSubmitting(false);
+            return;
           }
         }}
       >

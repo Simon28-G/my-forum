@@ -31,11 +31,14 @@ export class AuthService {
   }
 
   async login(user: User) {
-    const supposedUser: User = await this.usersService.findOne(user.username);
+    const supposedUser = await this.usersService.findOne(user.username);
     const hash = supposedUser.password;
     const isMatch = await bcrypt.compare(user.password, hash);
     if (isMatch) {
-      const payload = { username: user.username };
+      const payload = {
+        userId: supposedUser._id,
+        username: supposedUser.username,
+      };
       return {
         access_token: this.jwtService.sign(payload),
       };

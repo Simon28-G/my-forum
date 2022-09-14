@@ -1,0 +1,3 @@
+type LikePostPayload = {
+  post: string;
+};
