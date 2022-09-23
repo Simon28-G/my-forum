@@ -11,7 +11,7 @@ RUN npm install
 # add app
 COPY . ./
 
-RUN npm run build 
+RUN npm run build --
 
 # production environment
 FROM nginx:stable-alpine

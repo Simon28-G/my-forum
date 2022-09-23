@@ -25,7 +25,6 @@ import { GetPostDto } from './GetPost.dto';
 export class PostController {
   constructor(private postService: PostsService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   async getAll() {
     return this.postService.findAll();
